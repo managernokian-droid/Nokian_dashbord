@@ -6,6 +6,9 @@ Nokian vs конкуренты | Price positioning + ТОП-40 + продавц�
 import streamlit as st
 import pandas as pd
 
+# ── Initialize translations ──────────────────────────────────────────────────
+from modules.i18n import t, t_format, render_language_selector, get_language
+
 st.set_page_config(
     page_title="Nokian Price Intelligence",
     page_icon="🏎️",
@@ -52,12 +55,17 @@ df["Регион"] = df["Город"].apply(get_region)
 # Убираем позиции с остатком 1, 2, 3 штуки
 df = df[df["В наличии"] >= 4].copy()
 
+# ── Sidebar language selector ───────────────────────────────────────────────
+with st.sidebar:
+    render_language_selector()
+    st.divider()
+
 # ── Sidebar filters ──────────────────────────────────────────────────────────
 filters = render_sidebar(df)
 
 # Показываем какой срез загружен (если есть)
 if "current_slice_name" in st.session_state:
-    st.info(f"📁 Активный срез: **{st.session_state['current_slice_name']}**")
+    st.info(f"📁 {t('sidebar.active_slice')}: **{st.session_state['current_slice_name']}**")
 
 # Временная отладка
 if filters["apply_clicked"]:
@@ -105,11 +113,11 @@ active_comps = filters["comps"]        # list of selected competitor brands
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📍 Позиция модели",
-    "🗺️ ТОП-40 тепловая карта",
-    "🏪 Продавцы по размеру",
-    "📈 Динамика цен",
-    "🗺️ Карта Украины",  # ← новый таб
+    t("tabs.position"),
+    t("tabs.heatmap"),
+    t("tabs.sellers"),
+    t("tabs.dynamics"),
+    t("tabs.map"),
 ])
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -119,7 +127,7 @@ with tab1:
     wf_data = compute_waterfall(df_filtered, filters["models"], active_comps, filters["metric"])
 
     if wf_data.empty:
-        st.warning("Нет данных для выбранных фильтров. Проверьте модель и размер.")
+        st.warning(t("tab1.no_data"))
     else:
         chart_kpi_row(wf_data)
         st.plotly_chart(
@@ -137,32 +145,31 @@ with tab2:
     )
 
     if pivot_delta.empty:
-        st.warning("Нет данных для тепловой карты. Выберите конкурентов в сайдбаре.")
+        st.warning(t("tab2.no_data"))
     else:
         col1, col2 = st.columns([5, 1])
-        
+
         with col1:
             st.caption(
-                f"ТОП-{len(top40_sizes)} размеров по суммарному остатку · "
-                f"{len(active_comps)} конкурентов выбрано"
+                t_format("tab2.caption", count=len(top40_sizes), comps=len(active_comps))
             )
-        
+
         with col2:
             from modules.export_excel import export_heatmap_to_excel
             from datetime import datetime
-            
+
             excel_file = export_heatmap_to_excel(
                 pivot_delta, pivot_price, pivot_model, pivot_supplier
             )
-            
+
             st.download_button(
-                label="📥 Скачать Excel",
+                label=t("tab2.download_excel"),
                 data=excel_file,
                 file_name=f"heatmap_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
             )
-        
+
         st.plotly_chart(
             chart_heatmap(pivot_delta, pivot_price, pivot_model, pivot_supplier),
             use_container_width=True,
@@ -177,9 +184,9 @@ with tab3:
     sellers_df   = compute_sellers_pivot(df, top40_sizes, show_classes)
 
     if sellers_df.empty:
-        st.warning("Нет данных. Выберите хотя бы один класс.")
+        st.warning(t("tab3.no_data"))
     else:
-        st.caption("Количество уникальных поставщиков по размерам и брендам")
+        st.caption(t("tab3.caption"))
         chart_sellers(sellers_df)
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -187,40 +194,26 @@ with tab3:
 # ════════════════════════════════════════════════════════════════════════════
 with tab4:
     st.markdown(
-        """
-        <div class='section-header'>Динамика цен — история обновлений</div>
-        """,
+        f"<div class='section-header'>{t('tab4.subtitle')}</div>",
         unsafe_allow_html=True,
     )
-    st.caption(
-        "Каждое обновление XLSX сохраняется как снапшот в `data/history/`. "
-        "После первого обновления базы здесь появятся графики изменений цен."
-    )
+    st.caption(t("tab4.description"))
 
     history_df = compute_price_history()
 
     if history_df.empty:
         st.info(
-            "📂 История пока пуста. "
-            "При следующем обновлении базы запустите `python scripts/snapshot.py` — "
-            "и здесь появятся тренды цен по каждому бренду и размеру."
+            f"📂 {t('tab4.empty_title')}. "
+            f"{t('tab4.empty_desc')}"
         )
-        with st.expander("Как работает блок динамики?"):
-            st.markdown("""
-**Схема работы:**
-1. При обновлении XLSX запускаете `python scripts/snapshot.py`
-2. Скрипт сохраняет текущие розничные цены с датой в `data/history/YYYY-MM-DD.parquet`
-3. Этот блок читает все снапшоты и строит:
-   - **Тренд цены** выбранного бренда/модели/размера по датам
-   - **Распределение изменений** Δ% между двумя последними снапшотами
-   - **Таблицу изменений** — что подорожало / подешевело больше всего
-""")
+        with st.expander(t("tab4.how_it_works")):
+            st.markdown(t("tab4.how_it_works_text"))
     else:
         col1, col2 = st.columns([3, 1])
         with col2:
-            trend_brand = st.selectbox("Бренд", history_df["Бренд"].unique())
+            trend_brand = st.selectbox(t("tab4.brand"), history_df["Бренд"].unique())
             trend_size  = st.selectbox(
-                "Размер",
+                t("tab4.size"),
                 history_df[history_df["Бренд"] == trend_brand]["Размер"].unique(),
             )
         with col1:
@@ -239,18 +232,15 @@ with tab4:
 # ════════════════════════════════════════════════════════════════════════════
 with tab5:
     from modules.ukraine_map import generate_ukraine_map_html
-    
+
     st.markdown(
-        "<div class='section-header'>Карта продаж по регионам</div>",
+        f"<div class='section-header'>{t('tab5.subtitle')}</div>",
         unsafe_allow_html=True,
     )
-    
-    st.caption(
-        "Интерактивная карта показывает распределение остатков по городам и регионам "
-        "на основе выбранных фильтров. Размер пузыря = объём продаж."
-    )
-    
+
+    st.caption(t("tab5.caption"))
+
     map_html = generate_ukraine_map_html(df_filtered)
-    
+
     # Авто-подбор высоты: даём запас, но разрешаем прокрутку если потребуется.
     st.components.v1.html(map_html, height=900, scrolling=True)

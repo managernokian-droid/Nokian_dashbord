@@ -6,6 +6,7 @@ modules/filters.py
 
 import pandas as pd
 import streamlit as st
+from modules.i18n import t
 
 BRAND_CLASSES = {
     "Premium": [
@@ -36,7 +37,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
     """
     with st.sidebar:
         st.image("assets/logo.png") if __import__("pathlib").Path("assets/logo.png").exists() else None
-        st.markdown("## Фильтры")
+        st.markdown(f"## {t('sidebar.filters')}")
         
         # Проверяем загружены ли фильтры из сохранённого среза
         loaded_filters = None
@@ -52,7 +53,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 1: КЛАСС
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>1. Класс шины</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.class')}</div>", unsafe_allow_html=True)
         all_classes = ["Premium", "Mid", "Econom+"]
         
         default_classes = loaded_filters.get("classes", ["Premium"]) if loaded_filters else \
@@ -72,7 +73,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 2: СЕЗОН
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>2. Сезон</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.season')}</div>", unsafe_allow_html=True)
         available_seasons = _get_available(df1, "Сезон")
         
         prev_seasons = st.session_state["filter_state"].get("seasons", [])
@@ -96,7 +97,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 3: ГОД ИЗГОТОВЛЕНИЯ
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>3. Год изготовления</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.year')}</div>", unsafe_allow_html=True)
         
         years_with_value = sorted(
             [str(int(y)) for y in df2["Год изготовления шин"].dropna().unique() if y > 0],
@@ -140,7 +141,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 4: ТИП ТС
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>4. Тип транспортного средства</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.vehicle_type')}</div>", unsafe_allow_html=True)
         available_vehicles = _get_available(df3, "Тип транспортного средства")
         
         prev_vehicles = st.session_state["filter_state"].get("vehicles", [])
@@ -164,7 +165,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 5: РЕГИОН
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>5. Регион</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.region')}</div>", unsafe_allow_html=True)
         available_regions = sorted([r for r in df4["Регион"].dropna().unique() if r != "Unknown"])
         
         prev_regions = st.session_state["filter_state"].get("regions", [])
@@ -188,7 +189,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 6: БРЕНД
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>6. Бренд</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.brand')}</div>", unsafe_allow_html=True)
         available_brands = _get_available(df5, "Бренд")
         
         prev_brands = st.session_state["filter_state"].get("brands", [])
@@ -214,7 +215,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 7: ПОСТАВЩИК
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>7. Поставщик</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.supplier')}</div>", unsafe_allow_html=True)
         available_suppliers = _get_available(df6, "Поставщик")
         
         prev_suppliers = st.session_state["filter_state"].get("suppliers", [])
@@ -238,7 +239,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # Фильтр 8: МОДЕЛЬ
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>8. Модель шины</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.model')}</div>", unsafe_allow_html=True)
         available_models = _get_available(df7, "Модель")
         
         prev_models = st.session_state["filter_state"].get("models", [])
@@ -262,7 +263,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # СТРАНА (опционально)
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>Страна производителя (опц.)</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.country')}</div>", unsafe_allow_html=True)
         df_for_country = df7[df7["Модель"].isin(selected_models)] if selected_models else df7
         available_countries = _get_available(df_for_country, "Страна производитель")
         
@@ -285,7 +286,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # МЕТРИКА ЦЕНЫ
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>Метрика цены бренда</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.metric')}</div>", unsafe_allow_html=True)
         
         default_metric = loaded_filters.get("metric", "Медиана") if loaded_filters else \
                         st.session_state["filter_state"].get("metric", "Медиана")
@@ -307,7 +308,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # ────────────────────────────────────────────────────────────────────
         # КОНКУРЕНТЫ ДЛЯ СРАВНЕНИЯ
         # ────────────────────────────────────────────────────────────────────
-        st.markdown("<div class='section-header'>Конкуренты для сравнения</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='section-header'>{t('filters.competitors')}</div>", unsafe_allow_html=True)
         
         all_comp_brands = []
         for cls in selected_classes:
@@ -336,7 +337,7 @@ def render_sidebar(df_raw: pd.DataFrame) -> dict:
         # КНОПКА ПРИМЕНИТЬ
         # ────────────────────────────────────────────────────────────────────
         apply_clicked = st.button(
-            "✅ Применить фильтры",
+            f"✅ {t('sidebar.apply')}",
             use_container_width=True,
             type="primary",
         )

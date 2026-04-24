@@ -1,0 +1,86 @@
+{
+  "app": {
+    "title": "Nokian Price Intelligence",
+    "page_icon": "🏎️",
+    "description": "Nokian competitive pricing analysis dashboard"
+  },
+  "tabs": {
+    "position": "📍 Model Position",
+    "heatmap": "🗺️ TOP-40 Heat Map",
+    "sellers": "🏪 Sellers by Size",
+    "dynamics": "📈 Price Dynamics",
+    "map": "🗺️ Ukraine Map"
+  },
+  "sidebar": {
+    "filters": "Filters",
+    "language": "Language",
+    "active_slice": "Active slice",
+    "apply": "Apply Filters",
+    "save_slice": "Save as Slice"
+  },
+  "filters": {
+    "class": "1. Tire Class",
+    "season": "2. Season",
+    "year": "3. Manufacturing Year",
+    "vehicle_type": "4. Vehicle Type",
+    "brand": "5. Brand",
+    "model": "6. Model",
+    "country": "7. Country of Origin",
+    "supplier": "8. Supplier",
+    "region": "9. Region",
+    "competitors": "10. Competitors",
+    "metric": "11. Metric"
+  },
+  "tab1": {
+    "title": "Model Position",
+    "no_data": "No data for selected filters. Check model and size.",
+    "our_price": "Our Price",
+    "cheaper": "Cheaper than us",
+    "expensive": "More Expensive",
+    "avg_delta": "Average Δ%"
+  },
+  "tab2": {
+    "title": "TOP-40 Heat Map",
+    "caption": "TOP-{count} sizes by total stock · {comps} competitors selected",
+    "no_data": "No data for heat map. Select competitors in sidebar.",
+    "download_excel": "📥 Download Excel"
+  },
+  "tab3": {
+    "title": "Sellers by Size",
+    "caption": "Number of unique suppliers by sizes and brands",
+    "no_data": "No data. Select at least one class."
+  },
+  "tab4": {
+    "title": "Price Dynamics",
+    "subtitle": "Price Dynamics — Update History",
+    "description": "Each XLSX update is saved as a snapshot in `data/history/`. After the first database update, price change graphs will appear here.",
+    "empty_title": "History is Empty",
+    "empty_desc": "After the next data update, run `python scripts/snapshot.py` — and price trends for each brand and size will appear here.",
+    "how_it_works": "How does the dynamics block work?",
+    "how_it_works_text": "**How it works:**\n1. When updating XLSX, run `python scripts/snapshot.py`\n2. Script saves current retail prices with date to `data/history/YYYY-MM-DD.parquet`\n3. This block reads all snapshots and builds:\n   - **Price trend** for selected brand/model/size over time\n   - **Change distribution** Δ% between last two snapshots\n   - **Changes table** — what got more/less expensive",
+    "brand": "Brand",
+    "size": "Size"
+  },
+  "tab5": {
+    "title": "Sales Map by Region",
+    "subtitle": "Sales Map by Region",
+    "caption": "Interactive map shows stock distribution by cities and regions based on selected filters. Bubble size = sales volume."
+  },
+  "messages": {
+    "debug_suppliers": "Suppliers selected",
+    "debug_brands": "Brands selected",
+    "loading": "Loading...",
+    "error": "Error",
+    "warning": "Warning"
+  },
+  "chart_labels": {
+    "price": "Price",
+    "delta": "Δ%",
+    "stock": "Stock",
+    "brand": "Brand",
+    "size": "Size",
+    "supplier": "Supplier",
+    "city": "City",
+    "region": "Region"
+  }
+}
