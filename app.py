@@ -243,4 +243,4 @@ with tab5:
     map_html = generate_ukraine_map_html(df_filtered)
 
     # Авто-подбор высоты: даём запас, но разрешаем прокрутку если потребуется.
-    st.components.v1.html(map_html, height=900, scrolling=True)
+    st.html(map_html)
