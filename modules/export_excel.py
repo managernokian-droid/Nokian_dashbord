@@ -6,6 +6,7 @@ modules/export_excel.py
 from io import BytesIO
 import pandas as pd
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+from modules.i18n import t
 
 
 def export_heatmap_to_excel(
@@ -22,23 +23,27 @@ def export_heatmap_to_excel(
     
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         # Лист 1: Тепловая карта с дельтами
-        pivot_delta.to_excel(writer, sheet_name='Дельты %', index=True)
-        ws_delta = writer.sheets['Дельты %']
+        sheet_deltas = t('export.sheet_deltas')
+        pivot_delta.to_excel(writer, sheet_name=sheet_deltas, index=True)
+        ws_delta = writer.sheets[sheet_deltas]
         _format_heatmap_sheet(ws_delta, pivot_delta)
-        
+
         # Лист 2: Цены конкурентов
-        pivot_price.to_excel(writer, sheet_name='Цены конкурентов', index=True)
-        ws_price = writer.sheets['Цены конкурентов']
+        sheet_prices = t('export.sheet_prices')
+        pivot_price.to_excel(writer, sheet_name=sheet_prices, index=True)
+        ws_price = writer.sheets[sheet_prices]
         _format_price_sheet(ws_price)
-        
+
         # Лист 3: Модели
-        pivot_model.to_excel(writer, sheet_name='Модели', index=True)
-        ws_model = writer.sheets['Модели']
+        sheet_models = t('export.sheet_models')
+        pivot_model.to_excel(writer, sheet_name=sheet_models, index=True)
+        ws_model = writer.sheets[sheet_models]
         _format_text_sheet(ws_model)
-        
+
         # Лист 4: Поставщики
-        pivot_supplier.to_excel(writer, sheet_name='Поставщики', index=True)
-        ws_supplier = writer.sheets['Поставщики']
+        sheet_suppliers = t('export.sheet_suppliers')
+        pivot_supplier.to_excel(writer, sheet_name=sheet_suppliers, index=True)
+        ws_supplier = writer.sheets[sheet_suppliers]
         _format_text_sheet(ws_supplier)
     
     output.seek(0)

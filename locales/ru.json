@@ -82,5 +82,47 @@
     "supplier": "Поставщик",
     "city": "Город",
     "region": "Регион"
+  },
+  "charts": {
+    "kpi": {
+      "nokian_price": "Цена Nokian",
+      "percentile": "Перцентиль в классе",
+      "cheaper_than_us": "Конкурентов дороже нас",
+      "avg_delta": "Ср. Δ vs конкуренты",
+      "cheaper_majority": "дешевле большинства",
+      "expensive_majority": "дороже большинства",
+      "majority_expensive": "большинство дороже",
+      "majority_cheap": "большинство дешевле",
+      "we_expensive": "мы дороже",
+      "we_cheap": "мы дешевле",
+      "equal": "равны"
+    },
+    "waterfall": {
+      "title": "Сравнение цен",
+      "y_axis": "Бренд"
+    },
+    "heatmap": {
+      "title": "Тепловая карта цен",
+      "cheaper": "дешевле",
+      "more_expensive": "дороже"
+    },
+    "sellers": {
+      "title": "Распределение поставщиков",
+      "count": "Количество поставщиков"
+    },
+    "price_trend": {
+      "title": "Тренд цены",
+      "no_data": "Нет данных для выбранного бренда и размера"
+    },
+    "price_distribution": {
+      "title": "Распределение изменений цен",
+      "change": "Изменение цены (%)"
+    }
+  },
+  "export": {
+    "sheet_deltas": "Дельты %",
+    "sheet_prices": "Цены конкурентов",
+    "sheet_models": "Модели",
+    "sheet_suppliers": "Поставщики"
   }
 }

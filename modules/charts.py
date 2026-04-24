@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from modules.i18n import t
 
 # Цветовая схема
 NOKIAN_COLOR    = "#185FA5"
@@ -59,28 +60,28 @@ def chart_kpi_row(wf: pd.DataFrame) -> None:
     c1, c2, c3, c4 = st.columns(4)
     
     c1.metric(
-        "Цена Nokian",
+        t("charts.kpi.nokian_price"),
         f"{int(nok_price):,} ₴".replace(",", " "),
     )
-    
+
     c2.metric(
-        "Перцентиль в классе",
+        t("charts.kpi.percentile"),
         f"{pct}%",
-        delta="дешевле большинства" if pct < 50 else "дороже большинства",
+        delta=t("charts.kpi.cheaper_majority") if pct < 50 else t("charts.kpi.expensive_majority"),
         delta_color="normal" if pct < 50 else "inverse",
     )
-    
+
     c3.metric(
-        "Конкурентов дороже нас",
+        t("charts.kpi.cheaper_than_us"),
         f"{cheaper_cnt} / {total_comps}",
-        delta="большинство дороже" if cheaper_cnt > total_comps / 2 else "большинство дешевле",
+        delta=t("charts.kpi.majority_expensive") if cheaper_cnt > total_comps / 2 else t("charts.kpi.majority_cheap"),
         delta_color="normal" if cheaper_cnt > total_comps / 2 else "inverse",
     )
-    
+
     c4.metric(
-        "Ср. Δ vs конкуренты",
+        t("charts.kpi.avg_delta"),
         f"{avg_delta:+.1f}%" if pd.notna(avg_delta) else "—",
-        delta="мы дороже" if avg_delta > 0 else "мы дешевле" if avg_delta < 0 else "равны",
+        delta=t("charts.kpi.we_expensive") if avg_delta > 0 else t("charts.kpi.we_cheap") if avg_delta < 0 else t("charts.kpi.equal"),
         delta_color="inverse" if avg_delta > 0 else "normal" if avg_delta < 0 else "off",
     )
 
@@ -138,13 +139,13 @@ def chart_waterfall(wf: pd.DataFrame, models: list[str]) -> go.Figure:
     ))
 
     fig.update_layout(
-        title=dict(text=f"<b>Сравнение брендов по метрике</b>", font=dict(size=14)),
+        title=dict(text=f"<b>{t('charts.waterfall.title')}</b>", font=dict(size=14)),
         xaxis=dict(
             title="Исходная оптовая цена, ₴",
             tickformat=",",
             gridcolor="rgba(128,128,128,0.15)",
         ),
-        yaxis=dict(title=""),
+        yaxis=dict(title=t("charts.waterfall.y_axis")),
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         margin=dict(l=100, r=160, t=50, b=40),
@@ -226,7 +227,7 @@ def chart_heatmap(
         colorscale=HEATMAP_COLORSCALE,
         showscale=True,
         colorbar=dict(
-            title="Δ% (+ = мы дороже)",
+            title=t("charts.heatmap.title"),
             ticksuffix="%",
             len=0.8,
         ),
@@ -310,7 +311,7 @@ def chart_price_trend(
     ].sort_values("Дата")
 
     if sub.empty:
-        return go.Figure().update_layout(title="Нет данных")
+        return go.Figure().update_layout(title=t("charts.price_trend.no_data"))
 
     # Агрегируем по дате (min цена = лучшее предложение на дату)
     trend = sub.groupby("Дата")["Моя розничная цена"].min().reset_index()
@@ -367,7 +368,7 @@ def chart_price_distribution(history: pd.DataFrame) -> go.Figure:
     """
     dates = sorted(history["Дата"].unique())
     if len(dates) < 2:
-        return go.Figure().update_layout(title="Нужно минимум 2 снапшота для анализа изменений")
+        return go.Figure().update_layout(title=t("messages.error"))
 
     d1, d2 = dates[-2], dates[-1]
     snap1 = history[history["Дата"] == d1].groupby(["Бренд", "Размер"])["Моя розничная цена"].min()
@@ -381,8 +382,8 @@ def chart_price_distribution(history: pd.DataFrame) -> go.Figure:
         x="Δ%",
         nbins=40,
         color_discrete_sequence=[NOKIAN_COLOR],
-        labels={"Δ%": "Изменение цены, %"},
-        title=f"Распределение изменений цен: {d1.strftime('%d.%m.%Y')} → {d2.strftime('%d.%m.%Y')}",
+        labels={"Δ%": t("charts.price_distribution.change")},
+        title=f"{t('charts.price_distribution.title')}: {d1.strftime('%d.%m.%Y')} → {d2.strftime('%d.%m.%Y')}",
     )
 
     fig.add_vline(x=0, line_dash="dash", line_color=RED_MID, opacity=0.7)

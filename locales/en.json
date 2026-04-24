@@ -82,5 +82,47 @@
     "supplier": "Supplier",
     "city": "City",
     "region": "Region"
+  },
+  "charts": {
+    "kpi": {
+      "nokian_price": "Nokian Price",
+      "percentile": "Percentile in Class",
+      "cheaper_than_us": "Competitors More Expensive",
+      "avg_delta": "Avg Δ vs Competitors",
+      "cheaper_majority": "cheaper than most",
+      "expensive_majority": "more expensive than most",
+      "majority_expensive": "most are more expensive",
+      "majority_cheap": "most are cheaper",
+      "we_expensive": "we are more expensive",
+      "we_cheap": "we are cheaper",
+      "equal": "equal"
+    },
+    "waterfall": {
+      "title": "Price Comparison",
+      "y_axis": "Brand"
+    },
+    "heatmap": {
+      "title": "Price Heat Map",
+      "cheaper": "cheaper",
+      "more_expensive": "more expensive"
+    },
+    "sellers": {
+      "title": "Supplier Distribution",
+      "count": "Number of Suppliers"
+    },
+    "price_trend": {
+      "title": "Price Trend",
+      "no_data": "No data for selected brand and size"
+    },
+    "price_distribution": {
+      "title": "Price Change Distribution",
+      "change": "Price Change (%)"
+    }
+  },
+  "export": {
+    "sheet_deltas": "Deltas %",
+    "sheet_prices": "Competitor Prices",
+    "sheet_models": "Models",
+    "sheet_suppliers": "Suppliers"
   }
 }
