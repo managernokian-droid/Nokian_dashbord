@@ -132,6 +132,50 @@ app.py [Main UI orchestration]
 
 ---
 
+## Multi-Language Support
+
+The dashboard supports full internationalization (i18n) with translations for three languages:
+
+### Supported Languages
+- 🇷🇺 **Русский** (Russian)
+- 🇬🇧 **English**
+- 🇺🇦 **Українська** (Ukrainian)
+
+### How It Works
+- **Translation files:** `locales/ru.json`, `locales/en.json`, `locales/uk.json`
+- **i18n module:** `modules/i18n.py` provides `t(key)` and `t_format(key, **kwargs)` functions
+- **Language selector:** Available in sidebar, automatically triggers `st.rerun()` to refresh UI
+- **Session storage:** Selected language saved in `st.session_state['language']`
+
+### Adding New Translations
+1. Add your text to all three JSON files in `locales/`:
+   ```json
+   {
+     "section": {
+       "key": "Your text here"
+     }
+   }
+   ```
+2. In Python code, use:
+   ```python
+   from modules.i18n import t
+   st.write(t("section.key"))
+   # Or with variables:
+   st.write(t_format("section.key_with_vars", count=10))
+   ```
+
+### Translated Components
+- ✅ App titles and descriptions
+- ✅ Tab names
+- ✅ All filter labels (11 filters)
+- ✅ KPI metrics (4 metrics with 11 different labels)
+- ✅ Chart titles and axis labels
+- ✅ Excel export sheet names
+- ✅ Error and warning messages
+- ✅ Map display messages
+
+---
+
 ## Common Development Tasks
 
 ### Add a New Filter

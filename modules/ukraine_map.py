@@ -6,6 +6,7 @@ modules/ukraine_map.py
 
 import pandas as pd
 import json
+from modules.i18n import t
 
 
 # Координаты всех городов
@@ -53,7 +54,7 @@ def generate_ukraine_map_html(df: pd.DataFrame) -> str:
     """
     
     if df.empty:
-        return "<div style='padding:2rem;text-align:center;color:#94a3b8'>Нет данных для отображения карты</div>"
+        return f"<div style='padding:2rem;text-align:center;color:#94a3b8'>{t('map.no_data')}</div>"
     
     # Группируем по городам
     city_sales = (

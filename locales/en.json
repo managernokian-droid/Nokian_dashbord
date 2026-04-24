@@ -124,5 +124,8 @@
     "sheet_prices": "Competitor Prices",
     "sheet_models": "Models",
     "sheet_suppliers": "Suppliers"
+  },
+  "map": {
+    "no_data": "No data to display on map"
   }
 }
