@@ -85,7 +85,14 @@ def t_format(key: str, **kwargs) -> str:
 def render_language_selector() -> None:
     """Render language selector widget in sidebar."""
     st.markdown(
-        "<div class='section-header'>Мова / Language / Язык</div>",
+        """
+        <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center;'>
+            <div style='color: white; font-weight: bold; font-size: 14px; margin-bottom: 8px;'>
+                🌍 Выберите язык
+            </div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -96,10 +103,11 @@ def render_language_selector() -> None:
             break
 
     selected_lang_name = st.selectbox(
-        "Select language:",
+        label="",  # Скрываем лейбл (он уже в HTML выше)
         options=list(SUPPORTED_LANGUAGES.keys()),
         index=list(SUPPORTED_LANGUAGES.keys()).index(current_lang_name) if current_lang_name else 0,
         key="lang_selector",
+        label_visibility="collapsed",
     )
 
     selected_lang_code = SUPPORTED_LANGUAGES[selected_lang_name]
