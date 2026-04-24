@@ -37,6 +37,7 @@ wheels/
 
 # Data
 *.parquet
+Data/tires.xlsx
 Data/tires.parquet
 Data/history/*.parquet
 
